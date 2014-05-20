@@ -1,6 +1,6 @@
 {
   "name": "Dropper",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A jQuery plugin for simple drag and drop uploads. Part of the Formstone Library.",
   "author": {
     "name": "Ben Plum",
@@ -10,8 +10,8 @@
   "license": "MIT",
   "homepage": "http://formstone.it/dropper/",
   "main": [
-    "jquery.fs.naver.js",
-    "jquery.fs.naver.css"
+    "jquery.fs.dropper.js",
+    "jquery.fs.dropper.css"
   ],
   "ignore": [
     "*.jquery.json",
