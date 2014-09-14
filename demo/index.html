@@ -39,7 +39,7 @@
 					$filelist = $(".demo .filelist.complete");
 
 				$(".demo .dropped").dropper({
-					action: "upload.php",
+					action: "http://formstone.it/components/Dropper/demo/upload.php",
 					maxSize: 1048576
 				}).on("start.dropper", onStart)
 				  .on("complete.dropper", onComplete)
@@ -149,7 +149,7 @@
 						<h5>Queued</h5>
 						<ol class="filelist queue">
 						</ol>
-					</form>
+					</div>
 				</form>
 
 				<!-- UPLOADS -->
