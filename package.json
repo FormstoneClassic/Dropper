@@ -2,7 +2,7 @@
   "name": "Dropper",
   "id": "dropper",
   "codename": "jquery.fs.dropper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A jQuery plugin for simple drag and drop uploads. Part of the Formstone Library.",
   "keywords": [
   	"upload",
@@ -10,12 +10,11 @@
   	"ajax",
   	"javascript",
   	"jquery",
-  	"formstone",
-  	"benplum"
+  	"formstone"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/benplum/Dropper"
+    "url": "https://github.com/Formstone/Dropper"
   },
   "homepage": "http://formstone.it/dropper/",
   "demo": "http://formstone.it/components/Dropper/demo/index.html",
