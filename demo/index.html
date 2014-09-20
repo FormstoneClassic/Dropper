@@ -34,9 +34,12 @@
 		</style>
 
 		<script>
+			var $filequeue,
+				$filelist;
+
 			$(document).ready(function() {
-				var $filequeue = $(".demo .filelist.queue"),
-					$filelist = $(".demo .filelist.complete");
+				$filequeue = $(".demo .filelist.queue");
+				$filelist = $(".demo .filelist.complete");
 
 				$(".demo .dropped").dropper({
 					action: "http://formstone.it/components/Dropper/demo/upload.php",
