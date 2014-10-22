@@ -1,5 +1,5 @@
 /* 
- * Dropper v1.0.0 - 2014-09-20 
+ * Dropper v1.0.1 - 2014-10-22 
  * A jQuery plugin for simple drag and drop uploads. Part of the Formstone Library. 
  * http://formstone.it/dropper/ 
  * 

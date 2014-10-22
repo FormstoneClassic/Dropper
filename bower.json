@@ -1,6 +1,6 @@
 {
   "name": "Dropper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A jQuery plugin for simple drag and drop uploads. Part of the Formstone Library.",
   "author": {
     "name": "Ben Plum",
