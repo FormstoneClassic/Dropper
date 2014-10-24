@@ -9,7 +9,9 @@
 			box-sizing: border-box;
 		}
 
-		.dropper-dropzone {
+		// .dropper-dropzone
+
+		&-dropzone {
 			background: @dropper-background;
 			border: @dropper-border;
 			border-radius: @dropper-border-radius;
@@ -21,14 +23,16 @@
 			text-align: center;
 		}
 
-		&.dropping .dropper-dropzone,
-		.no-touch &:hover .dropper-dropzone {
+		&.dropping &-dropzone,
+		.no-touch &:hover &-dropzone {
 			background: @dropper-dropping-background;
 			border-color: @dropper-dropping-border-color;
 			color: @dropper-dropping-text-color;
 		}
 
-		.dropper-input {
+		// .dropper-input
+
+		&-input {
 			position: absolute;
 			left: 100%;
 			opacity: 0;

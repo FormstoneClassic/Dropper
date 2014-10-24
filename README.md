@@ -7,4 +7,4 @@ A jQuery plugin for simple drag and drop uploads. Part of the Formstone Library.
 - [Documentation](http://formstone.it/dropper/) 
 
 #### Bower Support 
-`bower install Dropper`
+`bower install Dropper` 
