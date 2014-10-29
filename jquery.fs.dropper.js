@@ -1,5 +1,5 @@
 /* 
- * Dropper v1.0.1 - 2014-10-24 
+ * Dropper v1.0.1 - 2014-10-29 
  * A jQuery plugin for simple drag and drop uploads. Part of the Formstone Library. 
  * http://formstone.it/dropper/ 
  * 
@@ -9,12 +9,48 @@
 ;(function ($, window) {
 	"use strict";
 
-	var supported = (window.File && window.FileReader && window.FileList);
+	var namespace = "dropper",
+		fileSupported = (window.File && window.FileReader && window.FileList),
+		// Classes
+		class_base               = namespace,
+		class_dropzone           = namespace + "-dropzone",
+		class_input              = namespace + "-input",
+		class_multiple           = namespace + "-multiple",
+		class_dropping           = namespace + "-dropping",
+		// Event - Listen
+		event_click              = "click."        + namespace,
+		event_dragEnter          = "dragenter."    + namespace,
+		event_dragOver           = "dragover."     + namespace,
+		event_dragLeave          = "dragleave."    + namespace,
+		event_drop               = "drop."         + namespace,
+		event_change             = "change."       + namespace,
+		event_fileError          = "fileError."    + namespace,
+		event_fileStart          = "fileStart."    + namespace,
+		event_fileProgress       = "fileProgress." + namespace,
+		event_fileComplete       = "fileComplete." + namespace,
+		event_beforeUnload       = "beforeunload." + namespace,
+		event_complete           = "complete."     + namespace,
+		event_start              = "start."        + namespace,
+		// event_keyDown            = "keydown."      + namespace,
+		// event_keyUp              = "keyup."        + namespace,
+		// event_keyPress           = "keypress."     + namespace,
+		// event_resize             = "resize."       + namespace,
+		// event_load               = "load."         + namespace,
+		// event_mouseEnter         = "mouseenter."   + namespace;
+		// event_mouseMove          = "mousemove."    + namespace,
+		// event_mouseLeave         = "mouseleave."   + namespace,
+		// event_touchStart         = "touchstart."   + namespace,
+		// event_touchMove          = "touchmove."    + namespace,
+		// event_touchEnd           = "touchend."     + namespace,
+		// event_clickTouchStart    = event_click + " " + event_touchStart,
+		// event_transition
+		event_clean_progress     = "progress";
 
 	/**
 	 * @options
 	 * @param action [string] "Where to submit uploads"
 	 * @param label [string] <'Drag and drop files or click to select'> "Dropzone text"
+	 * @param leave [string] <'You have uploads pending, are you sure you want to leave this page?'> "Before leave message"
 	 * @param maxQueue [int] <2> "Number of files to simultaneously upload"
 	 * @param maxSize [int] <5242880> "Max file size allowed"
 	 * @param postData [object] "Extra data to post with upload"
@@ -22,12 +58,13 @@
 	 */
 
 	var options = {
-		action: "",
-		label: "Drag and drop files or click to select",
-		maxQueue: 2,
-		maxSize: 5242880, // 5 mb
-		postData: {},
-		postKey: "file"
+		action      : "",
+		label       : "Drag and drop files or click to select",
+		leave       : "You have uploads pending, are you sure you want to leave this page?",
+		maxQueue    : 2,
+		maxSize     : 5242880, // 5 mb
+		postData    : {},
+		postKey     : "file"
 	};
 
 	/**
@@ -57,20 +94,20 @@
 
 	/**
 	 * @method private
-	 * @name _init
+	 * @name init
 	 * @description Initializes plugin
 	 * @param opts [object] "Initialization options"
 	 */
-	function _init(opts) {
+	function init(opts) {
 		var $items = $(this);
 
-		if (supported) {
+		if (fileSupported) {
 			// Settings
 			opts = $.extend({}, options, opts);
 
 			// Apply to each element
 			for (var i = 0, count = $items.length; i < count; i++) {
-				_build($items.eq(i), opts);
+				build($items.eq(i), opts);
 			}
 		}
 
@@ -79,68 +116,68 @@
 
 	/**
 	 * @method private
-	 * @name _build
+	 * @name build
 	 * @description Builds each instance
 	 * @param $nav [jQuery object] "Target jQuery object"
 	 * @param opts [object] <{}> "Options object"
 	 */
-	function _build($dropper, opts) {
-		opts = $.extend({}, opts, $dropper.data("dropper-options"));
+	function build($dropper, opts) {
+		opts = $.extend({}, opts, $dropper.data(namespace + "-options"));
 
 		var html = "";
 
-		html += '<div class="dropper-dropzone">';
+		html += '<div class="' + class_dropzone + '">';
 		html += options.label;
 		html += '</div>';
-		html += '<input class="dropper-input" type="file"';
+		html += '<input class="' + class_input + '" type="file"';
 		if (options.maxQueue > 1) {
-			html += ' multiple';
+			html += ' ' + class_multiple;
 		}
 		html += '>';
 
-		$dropper.addClass("dropper")
+		$dropper.addClass(class_base)
 				.append(html);
 
 		var data =  $.extend({
 			$dropper: $dropper,
-			$input: $dropper.find(".dropper-input"),
+			$input: $dropper.find( classify(class_input) ),
 			queue: [],
 			total: 0,
 			uploading: false
 		}, opts);
 
-		$dropper.on("click.dropper", ".dropper-dropzone", data, _onClick)
-				.on("dragenter.dropper", data, _onDragEnter)
-				.on("dragover.dropper", data, _onDragOver)
-				.on("dragleave.dropper", data, _onDragOut)
-				.on("drop.dropper", ".dropper-dropzone", data, _onDrop)
-				.data("dropper", data);
+		$dropper.on(event_click, classify(class_dropzone), data, onClick)
+				.on(event_dragEnter, data, onDragEnter)
+				.on(event_dragOver, data, onDragOver)
+				.on(event_dragLeave, data, onDragOut)
+				.on(event_drop, classify(class_dropzone), data, onDrop)
+				.data(namespace, data);
 
-		data.$input.on("change.dropper", data, _onChange);
+		data.$input.on(event_change, data, onChange);
 	}
 
 	/**
 	 * @method private
-	 * @name _onClick
+	 * @name onClick
 	 * @description Handles click to dropzone
 	 * @param e [object] "Event data"
 	 */
-	function _onClick(e) {
+	function onClick(e) {
 		e.stopPropagation();
 		e.preventDefault();
 
 		var data = e.data;
 
-		data.$input.trigger("click");
+		data.$input.trigger(event_click);
 	}
 
 	/**
 	 * @method private
-	 * @name _onChange
+	 * @name onChange
 	 * @description Handles change to hidden input
 	 * @param e [object] "Event data"
 	 */
-	function _onChange(e) {
+	function onChange(e) {
 		e.stopPropagation();
 		e.preventDefault();
 
@@ -148,80 +185,80 @@
 			files = data.$input[0].files;
 
 		if (files.length) {
-			_handleUpload(data, files);
+			handleUpload(data, files);
 		}
 	}
 
 	/**
 	 * @method private
-	 * @name _onDragEnter
+	 * @name onDragEnter
 	 * @description Handles dragenter to dropzone
 	 * @param e [object] "Event data"
 	 */
-	function _onDragEnter(e) {
+	function onDragEnter(e) {
 		e.stopPropagation();
 		e.preventDefault();
 
 		var data = e.data;
 
-		data.$dropper.addClass("dropping");
+		data.$dropper.addClass(class_dropping);
 	}
 
 	/**
 	 * @method private
-	 * @name _onDragOver
+	 * @name onDragOver
 	 * @description Handles dragover to dropzone
 	 * @param e [object] "Event data"
 	 */
-	function _onDragOver(e) {
+	function onDragOver(e) {
 		e.stopPropagation();
 		e.preventDefault();
 
 		var data = e.data;
 
-		data.$dropper.addClass("dropping");
+		data.$dropper.addClass(class_dropping);
 	}
 
 	/**
 	 * @method private
-	 * @name _onDragOut
+	 * @name onDragOut
 	 * @description Handles dragout to dropzone
 	 * @param e [object] "Event data"
 	 */
-	function _onDragOut(e) {
+	function onDragOut(e) {
 		e.stopPropagation();
 		e.preventDefault();
 
 		var data = e.data;
 
-		data.$dropper.removeClass("dropping");
+		data.$dropper.removeClass(class_dropping);
 	}
 
 	/**
 	 * @method private
-	 * @name _onDrop
+	 * @name onDrop
 	 * @description Handles drop to dropzone
 	 * @param e [object] "Event data"
 	 */
-	function _onDrop(e) {
+	function onDrop(e) {
 		e.preventDefault();
 
 		var data = e.data,
 			files = e.originalEvent.dataTransfer.files;
 
-		data.$dropper.removeClass("dropping");
+		data.$dropper.removeClass(class_dropping);
 
-		_handleUpload(data, files);
+		handleUpload(data, files);
 	}
 
 	/**
 	 * @method private
-	 * @name _handleUpload
+	 * @name handleUpload
 	 * @description Handles new files
 	 * @param data [object] "Instance data"
 	 * @param files [object] "File list"
 	 */
-	function _handleUpload(data, files) {
+	function handleUpload(data, files) {
 		var newFiles = [];
 
 		for (var i = 0; i < files.length; i++) {
@@ -241,25 +278,25 @@
 	   }
 
 	   if (!data.uploading) {
-		   $(window).on("beforeunload.dropper", function(){
-				return 'You have uploads pending, are you sure you want to leave this page?';
+		   $(window).on(event_beforeUnload, function(){
+				return data.leave;
 			});
 
 			data.uploading = true;
 		}
 
-		data.$dropper.trigger("start.dropper", [ newFiles ]);
+		data.$dropper.trigger(event_start, [ newFiles ]);
 
-		_checkQueue(data);
+		checkQueue(data);
 	}
 
 	/**
 	 * @method private
-	 * @name _checkQueue
+	 * @name checkQueue
 	 * @description Checks and updates file queue
 	 * @param data [object] "Instance data"
 	 */
-	function _checkQueue(data) {
+	function checkQueue(data) {
 		var transfering = 0,
 			newQueue = [];
 
@@ -285,7 +322,7 @@
 						}
 					}
 
-					_uploadFile(data, data.queue[j], formData);
+					uploadFile(data, data.queue[j], formData);
 				}
 
 				transfering++;
@@ -299,28 +336,28 @@
 		}
 
 		if (transfering === 0) {
-			$(window).off("beforeunload.dropper");
+			$(window).off(event_beforeUnload);
 
 			data.uploading = false;
 
-			data.$dropper.trigger("complete.dropper");
+			data.$dropper.trigger(event_complete);
 		}
 	}
 
 	/**
 	 * @method private
-	 * @name _uploadFile
+	 * @name uploadFile
 	 * @description Uploads file
 	 * @param data [object] "Instance data"
 	 * @param file [object] "Target file"
 	 * @param formData [object] "Target form"
 	 */
-	function _uploadFile(data, file, formData) {
+	function uploadFile(data, file, formData) {
 		if (file.size >= data.maxSize) {
 			file.error = true;
-			data.$dropper.trigger("fileError.dropper", [ file, "Too large" ]);
+			data.$dropper.trigger(event_fileError, [ file, "Too large" ]);
 
-			_checkQueue(data);
+			checkQueue(data);
 		} else {
 			file.started = true;
 			file.transfer = $.ajax({
@@ -334,7 +371,7 @@
 					var $xhr = $.ajaxSettings.xhr();
 
 					if ($xhr.upload) {
-						$xhr.upload.addEventListener("progress", function(e) {
+						$xhr.upload.addEventListener(event_clean_progress, function(e) {
 							var percent = 0,
 								position = e.loaded || e.position,
 								total = e.total;
@@ -343,41 +380,52 @@
 								percent = Math.ceil(position / total * 100);
 							}
 
-							data.$dropper.trigger("fileProgress.dropper", [ file, percent ]);
+							data.$dropper.trigger(event_fileProgress, [ file, percent ]);
 						}, false);
 					}
 
 					return $xhr;
 				},
 				beforeSend: function(e) {
-					data.$dropper.trigger("fileStart.dropper", [ file ]);
+					data.$dropper.trigger(event_fileStart, [ file ]);
 				},
 				success: function(response, status, jqXHR) {
 					file.complete = true;
-					data.$dropper.trigger("fileComplete.dropper", [ file, response ]);
+					data.$dropper.trigger(event_fileComplete, [ file, response ]);
 
-					_checkQueue(data);
+					checkQueue(data);
 				},
 				error: function(jqXHR, status, error) {
 					file.error = true;
-					data.$dropper.trigger("fileError.dropper", [ file, error ]);
+					data.$dropper.trigger(event_fileError, [ file, error ]);
 
-					_checkQueue(data);
+					checkQueue(data);
 				}
 			});
 		}
 	}
 
-	$.fn.dropper = function(method) {
+	/**
+	 * @method private
+	 * @name classify
+	 * @description Create class selector from text
+	 * @param text [string] "Text to convert"
+	 * @return [string] "New class name"
+	 */
+	function classify(text) {
+		return "." + text;
+	}
+
+	$.fn[namespace] = function(method) {
 		if (pub[method]) {
 			return pub[method].apply(this, Array.prototype.slice.call(arguments, 1));
 		} else if (typeof method === 'object' || !method) {
-			return _init.apply(this, arguments);
+			return init.apply(this, arguments);
 		}
 		return this;
 	};
 
-	$.dropper = function(method) {
+	$[namespace] = function(method) {
 		if (method === "defaults") {
 			pub.defaults.apply(this, Array.prototype.slice.call(arguments, 1));
 		}
