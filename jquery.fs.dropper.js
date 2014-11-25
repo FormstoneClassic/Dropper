@@ -1,5 +1,5 @@
 /* 
- * Dropper v1.0.1 - 2014-10-24 
+ * Dropper v1.0.1 - 2014-11-25 
  * A jQuery plugin for simple drag and drop uploads. Part of the Formstone Library. 
  * http://formstone.it/dropper/ 
  * 
@@ -51,7 +51,8 @@
 		 */
 		defaults: function(opts) {
 			options = $.extend(options, opts || {});
-			return $(this);
+
+			return (typeof this === 'object') ? $(this) : true;
 		}
 	};
 
@@ -90,10 +91,10 @@
 		var html = "";
 
 		html += '<div class="dropper-dropzone">';
-		html += options.label;
+		html += opts.label;
 		html += '</div>';
 		html += '<input class="dropper-input" type="file"';
-		if (options.maxQueue > 1) {
+		if (opts.maxQueue > 1) {
 			html += ' multiple';
 		}
 		html += '>';
