@@ -1,5 +1,5 @@
 /* 
- * Dropper v1.0.1 - 2014-10-24 
+ * Dropper v1.0.1 - 2014-11-25 
  * A jQuery plugin for simple drag and drop uploads. Part of the Formstone Library. 
  * http://formstone.it/dropper/ 
  * 
@@ -13,8 +13,7 @@
 .dropper *,
 .dropper *:before,
 .dropper *:after {
-  -moz-box-sizing: border-box;
-       box-sizing: border-box;
+  box-sizing: border-box;
 }
 .dropper-dropzone {
   background: #ffffff;
