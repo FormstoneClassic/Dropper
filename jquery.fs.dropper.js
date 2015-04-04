@@ -51,7 +51,8 @@
 		 */
 		defaults: function(opts) {
 			options = $.extend(options, opts || {});
-			return $(this);
+
+			return (typeof this === 'object') ? $(this) : true;
 		}
 	};
 
@@ -90,10 +91,10 @@
 		var html = "";
 
 		html += '<div class="dropper-dropzone">';
-		html += options.label;
+		html += opts.label;
 		html += '</div>';
 		html += '<input class="dropper-input" type="file"';
-		if (options.maxQueue > 1) {
+		if (opts.maxQueue > 1) {
 			html += ' multiple';
 		}
 		html += '>';
