@@ -8,7 +8,7 @@
     "url": "http://www.benplum.com"
   },
   "license": "MIT",
-  "homepage": "http://formstone.it/dropper/",
+  "homepage": "http://classic.formstone.it/dropper/",
   "main": [
     "jquery.fs.dropper.js",
     "jquery.fs.dropper.css"

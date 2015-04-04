@@ -25,9 +25,9 @@
     "jquery",
     "formstone"
   ],
-  "docs": "http://formstone.it/dropper/",
-  "demo": "http://formstone.it/dropper/",
-  "download": "https://github.com/Formstone/Dropper",
-  "bugs": "https://github.com/Formstone/Dropper/issues",
-  "homepage": "http://formstone.it/dropper/"
+  "docs": "http://classic.formstone.it/dropper/",
+  "demo": "http://classic.formstone.it/dropper/",
+  "download": "https://github.com/FormstoneClassic/Dropper",
+  "bugs": "https://github.com/FormstoneClassic/Dropper/issues",
+  "homepage": "http://classic.formstone.it/dropper/"
 }
